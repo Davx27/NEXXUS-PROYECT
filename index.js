@@ -1,70 +1,107 @@
 const express = require('express');
 const mysql = require('mysql2');
-const { v4: uuidv4 } = require('uuid'); // Generador de IDs únicos
+const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+
 const app = express();
 
-app.use(express.urlencoded({ extended: false }));
+// Configuración para recibir datos de formularios y JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-const db = mysql.createConnection({
-    host: 'localhost',
+// CONFIGURACIÓN DE LA CONEXIÓN (Abstracción para facilitar cambios)
+const dbConfig = {
+    host: '127.0.0.1',
     user: 'root',
-    password: '', // Tu contraseña
-    database: 'proyecto'
+    password: '', // Tu contraseña de MySQL
+    database: 'proyecto',
+    port: 3306
+};
+
+// Crear pool de conexiones (Más eficiente que una conexión única para muchos usuarios)
+const pool = mysql.createPool(dbConfig).promise();
+
+// VERIFICACIÓN DE CONEXIÓN
+async function checkConnection() {
+    try {
+        const connection = await pool.getConnection();
+        console.log('Conexión a MySQL establecida (Pool activo).');
+        connection.release();
+    } catch (err) {
+        console.error('Error crítico de conexión:', err.message);
+    }
+}
+checkConnection();
+
+// ==========================================================
+// RUTAS DE LA API (Preparadas para independencia del Front-end)
+// ==========================================================
+
+// 1. Ruta para registrar usuarios (POST)
+app.post('/api/usuarios', async (req, res) => {
+    const { nombre, apellido, documento, correo, telefono, password } = req.body;
+
+    // Validación básica de datos
+    if (!nombre || !correo || !documento) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios.' });
+    }
+
+    const nuevoId = uuidv4();
+    
+    const sql = `INSERT INTO usuarios (id, nombre, apellido, documento, correo, telefono, password) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    try {
+        await pool.query(sql, [nuevoId, nombre, apellido, documento, correo, telefono, password || '12345']);
+        
+        // En lugar de enviar HTML, enviamos JSON (estándar de API profesional)
+        res.status(201).json({
+            mensaje: 'Usuario creado exitosamente',
+            id: nuevoId
+        });
+    } catch (err) {
+        console.error(err);
+        if (err.code === 'ER_DUP_ENTRY') {
+            res.status(409).json({ error: 'El documento o correo ya están registrados.' });
+        } else {
+            res.status(500).json({ error: 'Error interno del servidor.' });
+        }
+    }
 });
 
-// RUTA DEL FORMULARIO
+// 2. Ruta para listar usuarios (GET)
+app.get('/api/usuarios', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT id, nombre, apellido, documento, correo FROM usuarios');
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ==========================================================
+// RUTA TEMPORAL PARA EL FORMULARIO (Frontend básico)
+// ==========================================================
 app.get('/', (req, res) => {
     res.send(`
-        <body style="font-family:sans-serif; background:#f4f7f6; display:flex; justify-content:center; padding:20px;">
-            <div style="background:white; padding:30px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:400px;">
-                <h2 style="text-align:center; color:#1a73e8;">Registro Nexxus PRO</h2>
-                <form action="/agregar" method="POST">
-                    <label>Nombre:</label>
-                    <input type="text" name="nombre" required style="width:100%; margin-bottom:15px; padding:10px;">
-                    
-                    <label>Apellido:</label>
-                    <input type="text" name="apellido" required style="width:100%; margin-bottom:15px; padding:10px;">
-                    
-                    <label>Tipo de Documento:</label>
-                    <select name="tipo_doc" style="width:100%; margin-bottom:15px; padding:10px;">
-                        <option value="CC">Cédula de Ciudadanía</option>
-                        <option value="TI">Tarjeta de Identidad</option>
-                        <option value="PAS">Pasaporte</option>
-                    </select>
-
-                    <label>Número Documento:</label>
-                    <input type="text" name="num_doc" required style="width:100%; margin-bottom:15px; padding:10px;">
-
-                    <label>Teléfono:</label>
-                    <input type="text" name="telefono" required style="width:100%; margin-bottom:15px; padding:10px;">
-
-                    <label>Correo:</label>
-                    <input type="email" name="correo" required style="width:100%; margin-bottom:15px; padding:10px;">
-
-                    <button type="submit" style="width:100%; background:#1a73e8; color:white; border:none; padding:12px; border-radius:5px; cursor:pointer;">REGISTRAR USUARIO</button>
+        <body style="font-family:sans-serif; background:#eef2f7; display:flex; justify-content:center; padding:50px;">
+            <div style="background:white; padding:30px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1); width:400px;">
+                <h2 style="color:#1a73e8; text-align:center;">Nexxus Pro - Registro</h2>
+                <form action="/api/usuarios" method="POST">
+                    <input type="text" name="nombre" placeholder="Nombre" required style="width:100%; margin-bottom:15px; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="text" name="apellido" placeholder="Apellido" required style="width:100%; margin-bottom:15px; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="text" name="documento" placeholder="Documento (DNI/CC)" required style="width:100%; margin-bottom:15px; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="email" name="correo" placeholder="Correo electrónico" required style="width:100%; margin-bottom:15px; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <input type="text" name="telefono" placeholder="Teléfono" style="width:100%; margin-bottom:15px; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                    <button type="submit" style="width:100%; background:#1a73e8; color:white; border:none; padding:15px; border-radius:8px; cursor:pointer; font-weight:bold;">CREAR CUENTA</button>
                 </form>
             </div>
         </body>
     `);
 });
 
-// PROCESO DE AGREGAR CON UUID
-app.post('/agregar', (req, res) => {
-    const { nombre, apellido, tipo_doc, num_doc, telefono, correo } = req.body;
-    
-    const nuevoId = uuidv4(); // Genera un ID como: '6c84fb90-12c4-11e1-840d-7b25c5ee775a'
-    const documentoFinal = `${tipo_doc}: ${num_doc}`;
-
-    const sql = `INSERT INTO usuarios (id, nombre, apellido, documento, correo, telefono, password) 
-                 VALUES (?, ?, ?, ?, ?, ?, 'encriptado_provisorio')`;
-
-    db.query(sql, [nuevoId, nombre, apellido, documentoFinal, correo, telefono], (err) => {
-        if (err) {
-            console.error(err);
-            return res.send("❌ Error: " + err.message);
-        }
-        res.send('<h1>✅ Registrado con UUID: ' + nuevoId + '</h1><a href="/">Volver</a>');
-    });
+// INICIO DEL SERVIDOR
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log (` Servidor Nexxus corriendo en http://localhost:\${PORT}`)
 });
-
-app.listen(3000, () => console.log('🚀 Servidor en http://localhost:3000'));
