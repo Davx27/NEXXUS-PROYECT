@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexxus Pro - Registro de Usuario</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <main class="login_container">
+        <section class="login_card">
+
+            <div class="logo_area">
+                <h1>NEXXUS<span>PRO</span></h1>
+                <p class="brand_tagline">Crea tu cuenta</p>
+            </div>
+
+            <form id="register_form">
+
+                <div class="input_group">
+                    <label for="reg_nombre">Nombre</label>
+                    <input type="text" id="reg_nombre" name="nombre" placeholder="Tu nombre" required>
+                </div>
+
+                <div class="input_group">
+                    <label for="reg_apellido">Apellido</label>
+                    <input type="text" id="reg_apellido" name="apellido" placeholder="Tu apellido" required>
+                </div>
+
+                <div class="input_group">
+                    <label for="reg_documento">Documento (CC/TI)</label>
+                    <input type="text" id="reg_documento" name="documento" placeholder="Ej: 10203040" required>
+                </div>
+
+                <div class="input_group">
+                    <label for="reg_correo">Correo Electrónico</label>
+                    <input type="email" id="reg_correo" name="correo" placeholder="correo@ejemplo.com" required>
+                </div>
+
+                <div class="input_group">
+                    <label for="reg_password">Contraseña</label>
+                    <input type="password" id="reg_password" name="password" placeholder="Mínimo 6 caracteres" required>
+                </div>
+
+                <button type="submit" class="primary_button">CREAR CUENTA</button>
+            </form>
+
+            <div class="register_prompt">
+                <p>¿Ya tienes cuenta? <a href="index.html" class="register_link">Inicia sesión aquí</a></p>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+
+</html>
