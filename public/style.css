@@ -1,0 +1,304 @@
+/* =====================================================
+   VARIABLES DE COLOR (Identidad Deportiva Nexxus Pro) */
+:root {
+    --electric_blue: #0056FF;
+    /* Acción principal */
+    --field_green: #28A745;
+    /* Éxito y confirmaciones */
+    --light_gray: #F4F7F6;
+    /* Fondo del sistema */
+    --white: #FFFFFF;
+    /* Fondo de tarjetas */
+    --dark_sport: #1A1A1B;
+    /* Textos y botones secundarios */
+}
+
+/* ===========================
+   RESETEO GLOBAL Y TIPOGRAFÍA */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* Quitamos el background de aquí para ponerlo en la capa de abajo */
+    background: var(--dark_sport); 
+    overflow: hidden; /* Evita scrolls raros por el desenfoque */
+}
+
+/* Esta es la capa mágica que contiene la imagen y el desenfoque */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* la parte de la imagen */
+    background-image: url('imagenes/fondoLogin.png');
+    background-size: cover;
+    background-position: center;
+    
+    /* EL DESENFOQUE: Aquí controlas qué tanto (5px es "poquito") */
+    filter: blur(4px);
+    
+    /* Esto evita que se vean bordes blancos por el desenfoque */
+    transform: scale(1.1); 
+    
+    /* Lo enviamos al fondo de todo */
+    z-index: -1; 
+}
+
+/* ==============================
+   CONTENEDOR Y TARJETA PRINCIPAL */
+.login_container {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
+.login_card {
+    background-color: rgba(255, 255, 255, 0.774);
+    backdrop-filter: blur(50px); /* Efecto de desenfoque para un look moderno */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border-top: 5px solid var(--electric_blue);
+    /* Toque deportivo superior */
+}
+
+/* ======================
+   ÁREA DE LOGO Y MARCA */
+.logo_area {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo_area h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    color: var(--dark_sport);
+}
+
+.logo_area h1 span {
+    color: var(--electric_blue);
+}
+
+.brand_tagline {
+    font-size: 0.85rem;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 5px;
+}
+
+/* ============================
+   FORMULARIO Y CAMPOS DE TEXTO */
+.input_group {
+    margin-bottom: 20px;
+}
+
+.input_group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.input_group input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+/* Efecto cuando el usuario hace clic en el campo (Focus) */
+.input_group input:focus {
+    outline: none;
+    border-color: var(--electric_blue);
+}
+
+/* =====================================================
+   BOTONES Y ENLACES (Incluye el nuevo botón de Registro) */
+.primary_button {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--electric_blue);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s;
+    margin-bottom: 15px;
+}
+
+.primary_button:hover {
+    background-color: #0044CC;
+    transform: translateY(-2px);
+}
+
+/* Estilos para la nueva sección de Registro */
+.register_prompt {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.register_link {
+    color: var(--electric_blue);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register_link:hover {
+    text-decoration: underline;
+}
+
+/* Línea divisoria con la letra "O" */
+.divider_line {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #AAA;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+}
+
+.divider_line::before,
+.divider_line::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.divider_line span {
+    padding: 0 10px;
+}
+
+/* Botón de invitado (RF20) */
+.guest_button {
+    width: 100%;
+    padding: 14px;
+    background-color: transparent;
+    color: var(--dark_sport);
+    border: 2px solid var(--dark_sport);
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.guest_button:hover {
+    background-color: var(--dark_sport);
+    color: var(--white);
+}
+
+.footer_links {
+    text-align: center;
+}
+
+.footer_links a {
+    color: #888;
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.footer_links a:hover {
+    text-decoration: underline;
+    color: var(--dark_sport);
+}
+
+/* ==================================================
+   MODAL DE TÉRMINOS Y CONDICIONES*/
+.terms_overlay {
+    display: none;
+    /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    /* Fondo oscuro transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Magia de CSS: Muestra el modal cuando la URL tiene el #terms_section */
+.terms_overlay:target {
+    display: flex;
+}
+
+.terms_modal {
+    background-color: var(--white);
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 8px solid var(--field_green);
+    /* Acento verde para reglas */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.terms_modal h2 {
+    margin-bottom: 15px;
+    color: var(--dark_sport);
+}
+
+.legal_text {
+    max-height: 60vh;
+    /* Si el texto de Sebastián es muy largo, se podrá hacer scroll */
+    overflow-y: auto;
+    margin-bottom: 20px;
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    padding-right: 10px;
+}
+
+.success_button {
+    background-color: var(--field_green);
+    color: var(--white);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.success_button:hover {
+    background-color: #218838;
+}
+
+/* Ajuste para que los formularios largos permitan scroll si es necesario */
+.login_container {
+    padding: 40px 20px; /* Más espacio arriba y abajo */
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+/* Estilo para que el scroll se vea limpio */
+.login_container::-webkit-scrollbar {
+    width: 5px;
+}
+.login_container::-webkit-scrollbar-thumb {
+    background: var(--electric_blue);
+    border-radius: 10px;
+}

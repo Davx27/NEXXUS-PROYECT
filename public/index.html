@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexxus Pro - Liga de Fútbol de Salón</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Importa fuentes desde Google Fonts -->
+</head>
+
+<body>
+
+    <main class="login">
+        <!-- Contenedor principal de toda la vista de login -->
+        <section class="login_card"> <!-- Tarjeta central donde está el formulario -->
+            <div class="logo_area">
+                <!-- Zona del logo / branding -->
+                <h1>NEXXUS<span>PRO</span></h1>               
+                <p class="brand_tagline">Gestión de Fútbol de Salón</p>
+                <!-- Descripción corta del sistema -->
+            </div>
+            
+            <form id="login_form"> <!-- Formulario de inicio de sesión -->
+                <div class="input_group">
+                    <!-- Grupo de input (label + input) -->
+                    <label for="user_identifier">Documento o Correo</label>
+                    <!-- Texto descriptivo del campo -->
+                    
+                    <input type="text" id="user_identifier" name="user_identifier" placeholder="Ej: 10203040" required>
+                    <!-- Campo para ingresar documento o correo -->
+                </div>
+
+                <div class="input_group">
+                    <!-- Segundo grupo de input -->
+                    <label for="user_password">Contraseña</label>
+                    
+                    <input type="password" id="user_password" name="user_password" placeholder="••••••••" required>
+                    <!-- Campo de contraseña (oculta caracteres) -->
+                </div>
+
+                <button type="submit" class="primary_button">INICIAR SESIÓN</button>
+                <!-- Botón para enviar el formulario -->
+            </form>
+
+            <div class="divider_line"><span>O</span></div>
+            <!-- Línea divisora visual con texto "O" -->
+
+            <div class="register_prompt">
+                <p>¿No tienes una cuenta? <a href="register.html" class="register_link">Regístrate aquí</a></p>
+            </div>          
+
+            <button class="guest_button" onclick="location.href='/publico'">
+                INGRESAR COMO INVITADO
+            </button>
+            <!-- Botón que redirige a una ruta pública sin login -->
+
+            <div class="footer_links">
+                <!-- Enlaces adicionales -->
+                <a href="#terms_section">Términos, Condiciones y Privacidad</a>
+                <!-- Enlace que activa el modal de términos -->
+            </div>
+        </section>
+    </main>
+
+    <aside id="terms_section" class="terms_overlay">
+        <!-- Overlay (pantalla encima) para mostrar los términos -->
+        
+        <div class="terms_modal">
+            <!-- Ventana modal de términos -->
+            
+            <h2>Términos y Condiciones</h2>
+            
+            <div class="legal_text">
+                <!-- Contenido legal -->
+                <p>Al acceder a Nexxus Pro, aceptas las Reglas de Negocio (RN1-RN23)...</p>
+            </div>
+            
+            <button class="success_button" onclick="window.location.hash=''">
+                Entendido
+            </button>
+            <!-- Botón para cerrar el modal (quita el hash de la URL) -->
+        </div>
+    </aside>
+
+</body>
+</html>
