@@ -1,6 +1,3 @@
-*/ PROYECTO: NEXXUS - SISTEMA PROFESIONAL DE GESTIÓN DEPORTIVA
-   OPTIMIZACIÓN: Estructura normalizada, índices y gestión de eventos en tiempo real.
-*/
 
 DROP DATABASE IF EXISTS proyecto;
 CREATE DATABASE proyecto;
@@ -72,14 +69,14 @@ CREATE TABLE torneo_equipos (
 );
 
 -- ==========================================================
--- 3. GESTIÓN TÉCNICA DE JUGADORES
+-- 3. GESTIÓN TÉCNICA DE JUGADORES (CORREGIDO)
 -- ==========================================================
 
 CREATE TABLE jugadores (
     id VARCHAR(36) PRIMARY KEY,
     usuario_id VARCHAR(36) UNIQUE,
-    -- Vinculación directa con equipo (un jugador pertenece a un equipo actual)
-    equipo_id VARCHAR(36), 
+    -- Especificamos NULL para que la restricción de abajo funcione
+    equipo_id VARCHAR(36) NULL, 
     fecha_nacimiento DATE NOT NULL,
     posicion ENUM('Portero', 'Poste', 'Ala', 'Pivot'),
     pierna_habil ENUM('Izquierda', 'Derecha', 'Ambidiestro'),
@@ -87,7 +84,7 @@ CREATE TABLE jugadores (
     peso DECIMAL(5,2),
     busca_equipo BOOLEAN DEFAULT TRUE,
     CONSTRAINT fk_j_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    CONSTRAINT fk_j_equipo FOREIGN KEY (equipo_id) REFERENCES equipos(id) ON SET NULL
+    CONSTRAINT fk_j_equipo FOREIGN KEY (equipo_id) REFERENCES equipos(id) ON DELETE SET NULL
 );
 
 -- ==========================================================
@@ -126,3 +123,20 @@ CREATE TABLE eventos_partido (
 );
 
 
+-- Interaccion
+
+-- Para ver los datos de todos los usuarios registrados hasta el momento
+SELECT * FROM usuarios;
+
+-- Para ver columnas especificas
+SELECT nombre, apellido, correo FROM usuarios;
+
+-- Para filtrar datos
+-- Por ejemplo para ver un jugador en que posicion juega
+SELECT nombre, posicion FROM jugadores 
+WHERE posicion = 'Portero';
+
+-- Para ordenar los resultador 
+-- Como por ejemplo la tabla de posiciones de mayor a menor puntaje
+SELECT equipo_id, puntos FROM torneo_equipos  -- Ahora no funciona debido a que en la tabla de equipos no hay nada relacionado a los puntos
+ORDER BY puntos DESC;
