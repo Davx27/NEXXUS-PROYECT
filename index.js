@@ -18,14 +18,14 @@ app.use(express.static('public')); // Sirve los archivos de la carpeta public
  * Parámetros solicitados: TyC, Encriptación, Confirmación y Verificación.
  */
 app.post('/api/usuarios/registro', async (req, res) => {
-    const { 
-        first_name, 
-        last_name, 
-        document_type, 
-        document_id, 
-        email, 
-        phone, 
-        password, 
+    const {
+        first_name,
+        last_name,
+        document_type,
+        document_id,
+        email,
+        phone,
+        password,
         confirm_password, // Confirmación de contraseña
         accept_terms      // Requerimiento: Acepto TyC
     } = req.body;
@@ -57,19 +57,19 @@ app.post('/api/usuarios/registro', async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
         await pool.query(sql, [
-            first_name, 
-            last_name, 
-            document_type, 
-            document_id, 
-            email, 
-            phone, 
-            hashedPassword, 
+            first_name,
+            last_name,
+            document_type,
+            document_id,
+            email,
+            phone,
+            hashedPassword,
             verificationToken
         ]);
 
-        res.status(201).json({ 
+        res.status(201).json({
             mensaje: 'Usuario creado. Revisa tu correo para confirmar tu cuenta.',
-            nota: 'En producción, el token se envía por email.' 
+            nota: 'En producción, el token se envía por email.'
         });
 
     } catch (err) {
@@ -87,10 +87,10 @@ app.post('/api/usuarios/registro', async (req, res) => {
  */
 app.post('/api/usuarios/confirmar-2fa', async (req, res) => {
     const { email, code } = req.body;
-    
+
     try {
         const [rows] = await pool.query('SELECT two_factor_code FROM users WHERE email = ?', [email]);
-        
+
         if (rows.length > 0 && rows[0].two_factor_code === code) {
             res.json({ mensaje: 'Doble autenticación exitosa. Acceso concedido.' });
         } else {
@@ -98,6 +98,46 @@ app.post('/api/usuarios/confirmar-2fa', async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ error: 'Error al verificar 2FA.' });
+    }
+});
+
+/**
+ * 2.5 LOGIN DE USUARIOS
+ * Valida correo y contraseña encriptada
+ */
+app.post('/api/usuarios/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // 1. Buscamos al usuario por su correo
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+
+        if (users.length === 0) {
+            return res.status(401).json({ error: 'El correo no está registrado.' });
+        }
+
+        const user = users[0];
+
+        // 2. Comparamos la contraseña que escribió el usuario con la de la DB (encriptada)
+        const validPassword = await bcrypt.compare(password, user.password);
+
+        if (!validPassword) {
+            return res.status(401).json({ error: 'La contraseña es incorrecta.' });
+        }
+
+        // 3. Login exitoso
+        res.json({
+            mensaje: '¡Inicio de sesión correcto!',
+            user: {
+                nombre: user.first_name,
+                apellido: user.last_name,
+                email: user.email
+            }
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error interno en el servidor al intentar loguear.' });
     }
 });
 
