@@ -1,51 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexxus Pro - Registro de Usuario</title>
     <link rel="stylesheet" href="style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
     <main class="login_container">
         <section class="login_card">
-
+            
             <div class="logo_area">
                 <h1>NEXXUS<span>PRO</span></h1>
-                <p class="brand_tagline">Crea tu cuenta</p>
+                <p class="brand_tagline">Crea tu cuenta de deportista</p>
             </div>
-
+            
             <form id="register_form">
-
+                
                 <div class="input_group">
                     <label for="reg_nombre">Nombre</label>
-                    <input type="text" id="reg_nombre" name="nombre" placeholder="Tu nombre" required>
+                    <input type="text" id="reg_nombre" placeholder="Tu nombre" required>
                 </div>
 
                 <div class="input_group">
                     <label for="reg_apellido">Apellido</label>
-                    <input type="text" id="reg_apellido" name="apellido" placeholder="Tu apellido" required>
+                    <input type="text" id="reg_apellido" placeholder="Tu apellido" required>
                 </div>
 
                 <div class="input_group">
-                    <label for="reg_documento">Documento (CC/TI)</label>
-                    <input type="text" id="reg_documento" name="documento" placeholder="Ej: 10203040" required>
+                    <label for="reg_tipo_doc">Tipo de Documento</label>
+                    <select id="reg_tipo_doc" style="width: 100%; padding: 14px; border: 2px solid #E0E0E0; border-radius: 8px;" required>
+                        <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
+                        <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
+                        <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                    </select>
+                </div>
+                
+                <div class="input_group">
+                    <label for="reg_documento">Número de Documento</label>
+                    <input type="text" id="reg_documento" placeholder="Ej: 10203040" required>
                 </div>
 
                 <div class="input_group">
                     <label for="reg_correo">Correo Electrónico</label>
-                    <input type="email" id="reg_correo" name="correo" placeholder="correo@ejemplo.com" required>
+                    <input type="email" id="reg_correo" placeholder="correo@ejemplo.com" required>
+                </div>
+
+                <div class="input_group">
+                    <label for="reg_telefono">Teléfono (Celular)</label>
+                    <input type="tel" id="reg_telefono" placeholder="300 000 0000" required>
                 </div>
 
                 <div class="input_group">
                     <label for="reg_password">Contraseña</label>
-                    <input type="password" id="reg_password" name="password" placeholder="Mínimo 6 caracteres" required>
+                    <input type="password" id="reg_password" placeholder="Mínimo 6 caracteres" required>
+                </div>
+
+                <div class="input_group">
+                    <label for="reg_confirm_password">Confirmar Contraseña</label>
+                    <input type="password" id="reg_confirm_password" placeholder="Repite tu contraseña" required>
+                </div>
+
+                <div class="input_group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <input type="checkbox" id="reg_terminos" style="width: auto;" required>
+                    <label for="reg_terminos" style="margin-bottom: 0; font-size: 0.85rem;">
+                        Acepto los <a href="#terms_section" class="register_link">Términos y Condiciones</a>
+                    </label>
                 </div>
 
                 <button type="submit" class="primary_button">CREAR CUENTA</button>
@@ -58,6 +81,15 @@
         </section>
     </main>
 
+    <aside id="terms_section" class="terms_overlay">
+        <div class="terms_modal">
+            <h2>Términos y Condiciones</h2>
+            <div class="legal_text">
+                <p>Al acceder a Nexxus Pro, aceptas las Reglas de Negocio (RN1-RN23)...</p>
+            </div>
+            <button class="success_button" onclick="window.location.hash=''">Entendido</button>
+        </div>
+    </aside>
+    <script src="script.js"></script>
 </body>
-
 </html>

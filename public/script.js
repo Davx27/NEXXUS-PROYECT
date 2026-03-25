@@ -5,20 +5,23 @@ const registerForm = document.getElementById('register_form');
 
 if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Evita que la página se recargue
+        e.preventDefault();
 
-        // Capturamos los datos de los inputs
+        // Extraemos todos los datos nuevos y los mapeamos al inglés
         const formData = {
-            nombre: document.getElementById('reg_nombre').value,
-            apellido: document.getElementById('reg_apellido').value,
-            documento: document.getElementById('reg_documento').value,
-            correo: document.getElementById('reg_correo').value,
-            password: document.getElementById('reg_password').value
+            first_name: document.getElementById('reg_nombre').value,
+            last_name: document.getElementById('reg_apellido').value,
+            document_type: document.getElementById('reg_tipo_doc').value, // Nuevo
+            document_id: document.getElementById('reg_documento').value,
+            email: document.getElementById('reg_correo').value,
+            phone: document.getElementById('reg_telefono').value, // Nuevo
+            password: document.getElementById('reg_password').value,
+            confirm_password: document.getElementById('reg_confirm_password').value, // Nuevo
+            accept_terms: document.getElementById('reg_terminos').checked // Nuevo (true/false)
         };
 
         try {
-            // Enviamos los datos a la API que ya tienes en index.js
-            const response = await fetch('/api/usuarios', {
+            const response = await fetch('/api/usuarios/registro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -27,14 +30,14 @@ if (registerForm) {
             const result = await response.json();
 
             if (response.ok) {
-                alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
-                window.location.href = 'index.html'; // Lo mandamos al login
+                alert('¡Registro exitoso! Ya puedes iniciar sesión.');
+                window.location.href = 'index.html'; // Te devuelve al login
             } else {
-                alert('Error: ' + result.error);
+                alert('Error al registrar: ' + (result.error || 'Datos inválidos'));
             }
         } catch (error) {
-            console.error('Error en el registro:', error);
-            alert('Hubo un problema al conectar con el servidor.');
+            console.error('Error:', error);
+            alert('No se pudo conectar con el servidor.');
         }
     });
 }
@@ -51,9 +54,59 @@ if (loginForm) {
         const identifier = document.getElementById('user_identifier').value;
         const password = document.getElementById('user_password').value;
 
-        console.log('Intentando entrar con:', identifier);
-        
-        // Aquí es donde luego programaremos la validación contra la DB
-        alert('Próximamente: Validación de login para ' + identifier);
+        try {
+            const response = await fetch('/api/usuarios/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // Enviamos identifier como email, asumiendo que el backend valida por ahí
+                body: JSON.stringify({ email: identifier, password: password }) 
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('¡Inicio de sesión correcto!');
+                // Aquí en el futuro lo rediriges a su panel (ej. window.location.href = 'panel.html')
+            } else {
+                alert('Error: ' + (result.error || 'Credenciales incorrectas'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Fallo al conectar con el servidor.');
+        }
+    });
+}
+
+// ==========================================================
+// 3. LÓGICA PARA RECUPERAR CONTRASEÑA (recover.html)
+// ==========================================================
+const recoverForm = document.getElementById('recover_form');
+
+if (recoverForm) {
+    recoverForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('recover_email').value;
+
+        try {
+            const response = await fetch('/api/usuarios/recuperar-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // El backend responde con la propiedad "mensaje" si todo sale correcto
+                alert(result.mensaje);
+                window.location.href = 'index.html'; // Lo devolvemos al login
+            } else {
+                alert('Error: ' + (result.error || 'No se pudo procesar la solicitud.'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al conectar con el servidor.');
+        }
     });
 }

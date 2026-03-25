@@ -302,3 +302,22 @@ body::before {
     background: var(--electric_blue);
     border-radius: 10px;
 }
+
+/* Estilos para que la lista desplegable de documento se vea igual a los inputs */
+.input_group select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+    color: var(--dark_sport);
+    background-color: transparent;
+    transition: border-color 0.3s ease;
+    cursor: pointer;
+}
+
+.input_group select:focus {
+    outline: none;
+    border-color: var(--electric_blue);
+}
